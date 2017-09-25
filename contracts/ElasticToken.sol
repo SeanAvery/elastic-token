@@ -4,6 +4,7 @@ contract ElasticToken {
   /* EVENTS */
   event Transfer(address indexed _to, uint256 _amount);
   event Approve(address indexed _from, address indexed _spender, uint256 _amount);
+  event Burn(address indexed _from, uint256 _amount);
   event ChangeAdmin(address indexed _admin);
   event ChangeDecimal(uint256 _decimal);
 
@@ -14,7 +15,8 @@ contract ElasticToken {
   string name;
   string ticker;
   mapping(address => uint256) balances;
-  mapping(address => mapping(address => uint)) approvals;
+  mapping(address => mapping(address => uint256)) approvals;
+  mapping(address => uint) burnings;
 
   /* CNSTRCTR */
   function ElasticToken(address _admin, uint256 _supply, uint256 _decimal, string _name, string _ticker) {
@@ -52,8 +54,15 @@ contract ElasticToken {
     return true;
   }
 
-  /* SIGNATURE ABSTRACTED FNS */
+  function burn(uint256 _amount) returns (bool) {
+    require(balances[msg.sender] >= _amount);
+    balances[msg.sender] -= _amount;
+    burnings[msg.sender] += _amount;
+    Burn(msg.sender, _amount);
+    return true;
+  }
 
+  /* SIGNATURE ABSTRACTED FNS */
 
   /* ADMIN FNS */
   function changeAdmin(address _newAdmin) returns (bool) {
@@ -67,6 +76,10 @@ contract ElasticToken {
     decimal = _newDecimal;
     return true;
   }
+
+  /*function mint() returns (bool) {
+    require(msg.sender == admin);
+  }*/
 
   /* SAFE MATH */
 }
