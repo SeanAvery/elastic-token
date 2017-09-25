@@ -18,6 +18,7 @@ contract ElasticToken {
   mapping(address => uint256) balances;
   mapping(address => mapping(address => uint256)) approvals;
   mapping(address => uint) burnings;
+  mapping(bytes32 => bool) fills;
 
   /* CNSTRCTR */
   function ElasticToken(address _admin, uint256 _supply, uint256 _decimal, string _name, string _ticker) {
@@ -64,6 +65,19 @@ contract ElasticToken {
   }
 
   /* SIGNATURE ABSTRACTED FNS */
+  function burn(uint256 _amount, bytes32 _salt, address _who, bytes32[3] _sig) returns (bool) {
+    bytes4 methodID = 0xc1644b1f;
+    bytes32 msgHash = keccak256(methodID, _amount, _salt);
+    address signer = ecrecover(msgHash, uint8(_sig[2]), _sig[0], _sig[1]);
+    require(signer == _who);
+    require(fills[msgHash] == false);
+    balances[signer] -= _amount;
+    supply -= _amount;
+    burnings[signer] += _amount;
+    fills[msgHash] = true;
+    Burn(signer, _amount);
+    return true;
+  }
 
   /* ADMIN FNS */
   function mint(uint256 _amount, address _beneficiary) returns (bool) {
