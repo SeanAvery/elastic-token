@@ -2,6 +2,8 @@ pragma solidity ^0.4.15;
 
 contract ElasticToken {
   /* EVENTS */
+  event ChangeAdmin(address indexed _admin);
+  event ChangeDecimal(uint256 _decimal);
 
   /* STATE */
   address admin;
@@ -23,8 +25,15 @@ contract ElasticToken {
   }
 
   /* PUBLIC FNS */
+  function transfer(address _to, uint256 _amount) returns (bool) {
+    require(balances[msg.sender] >= _amount);
+    balances[msg.sender] -= _amount;
+    balances[_to] += _amount;
+
+  }
 
   /* SIGNATURE ABSTRACTED FNS */
+
 
   /* ADMIN FNS */
   function changeAdmin(address _newAdmin) returns (bool) {
