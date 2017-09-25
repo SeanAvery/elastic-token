@@ -5,6 +5,7 @@ contract ElasticToken {
   event Transfer(address indexed _to, uint256 _amount);
   event Approve(address indexed _from, address indexed _spender, uint256 _amount);
   event Burn(address indexed _from, uint256 _amount);
+  event Mint(address indexed _beneficiary, uint256 _amount);
   event ChangeAdmin(address indexed _admin);
   event ChangeDecimal(uint256 _decimal);
 
@@ -65,6 +66,14 @@ contract ElasticToken {
   /* SIGNATURE ABSTRACTED FNS */
 
   /* ADMIN FNS */
+  function mint(uint256 _amount, address _beneficiary) returns (bool) {
+    require(msg.sender == admin);
+    supply+= _amount;
+    balances[_beneficiary] += _amount;
+    Mint(_beneficiary, _amount);
+    return true;
+  }
+
   function changeAdmin(address _newAdmin) returns (bool) {
     require(msg.sender == admin);
     admin = _newAdmin;
@@ -76,10 +85,6 @@ contract ElasticToken {
     decimal = _newDecimal;
     return true;
   }
-
-  /*function mint() returns (bool) {
-    require(msg.sender == admin);
-  }*/
 
   /* SAFE MATH */
 }
