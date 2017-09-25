@@ -2,9 +2,10 @@ pragma solidity ^0.4.15;
 
 contract ElasticToken {
   /* EVENTS */
+  event Transfer(address indexed _to, uint256 _amount);
+  event Approve(address indexed _from, address indexed _spender, uint256 _amount);
   event ChangeAdmin(address indexed _admin);
   event ChangeDecimal(uint256 _decimal);
-  event Transfer(address indexed _to, uint256 _amount);
 
   /* STATE */
   address admin;
@@ -31,6 +32,24 @@ contract ElasticToken {
     balances[msg.sender] -= _amount;
     balances[_to] += _amount;
     Transfer(_to, _amount);
+    return true;
+  }
+
+  function approve(address _spender, uint256 _amount) returns (bool) {
+    require(balances[msg.sender] >= _amount);
+    approvals[msg.sender][_spender] = _amount;
+    Approve(msg.sender, _spender, _amount);
+    return true;
+  }
+
+  function transferFrom(address _from, address _to, uint256 _amount) returns (bool) {
+    require(balances[_from] >= _amount);
+    require(approvals[_from][msg.sender] >= _amount);
+    approvals[_from][msg.sender] -= _amount;
+    balances[_from] -= _amount;
+    balances[_to] += _amount;
+    Transfer(_from, _amount);
+    return true;
   }
 
   /* SIGNATURE ABSTRACTED FNS */
