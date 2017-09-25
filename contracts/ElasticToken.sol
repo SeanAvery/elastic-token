@@ -4,6 +4,7 @@ contract ElasticToken {
   /* EVENTS */
   event ChangeAdmin(address indexed _admin);
   event ChangeDecimal(uint256 _decimal);
+  event Transfer(address indexed _to, uint256 _amount);
 
   /* STATE */
   address admin;
@@ -29,7 +30,7 @@ contract ElasticToken {
     require(balances[msg.sender] >= _amount);
     balances[msg.sender] -= _amount;
     balances[_to] += _amount;
-
+    Transfer(_to, _amount);
   }
 
   /* SIGNATURE ABSTRACTED FNS */
