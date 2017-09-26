@@ -1,7 +1,10 @@
 const ElasticToken = artifacts.require('./ElasticToken.sol')
+const BN = require('bn.js')
+
 const {
   getContract,
-  getCoinbase
+  getCoinbase,
+  getAccounts
 } = require('./utils')
 
 const tokenParams =  [ '0x77161ac6576e2870f64ca147de120f0ba8a66255', 1e9, 0, 'Gold', 'GLD' ]
@@ -31,9 +34,27 @@ contract('ElasticToken', (accounts) => {
         const elasticToken = await getContract()
         const deployer = await getCoinbase()
         const balance = await elasticToken.balances.call(deployer)
-        assert.equal(balance, tokenParmas[1])
+        assert.equal(balance, tokenParams[1])
       } catch (err) {
         console.log('### error in test 2', err)
+      }
+    })
+  })
+
+  describe('Transfer tests', () => {
+    it('Should transfer 100 tokens given sufficient balance', async () => {
+      try {
+        const elasticToken = await getContract()
+        const accounts = await getAccounts()
+        const balanceApre = await elasticToken.balances.call(accounts[0])
+        await elasticToken.transfer(accounts[1], 1e2, { from: accounts[0] })
+        const balanceA = await elasticToken.balances.call(accounts[0])
+        const balanceB = await elasticToken.balances.call(accounts[1])
+        console.log('balanceApre', balanceApre)
+        assert.equal(balanceApre.sub(balanceA).toString(), new BN('100', 10).toString())
+        assert.equal(balanceB, new BN('100', 10).toString())
+      } catch (err) {
+        console.log('### error in test 3', err)
       }
     })
   })
