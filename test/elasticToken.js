@@ -107,5 +107,46 @@ contract('ElasticToken', (accounts) => {
         console.log('### error in test 6', err)
       }
     })
+
+    it('Should transferFrom given sufficient approval balance', async () => {
+      try {
+        const elasticToken = await getContract()
+        const accounts = await getAccounts()
+        const approvalPre = await elasticToken.approvals.call(accounts[0], accounts[3])
+        const balanceApre = await elasticToken.balances.call(accounts[0])
+        const balanceBpre = await elasticToken.balances.call(accounts[5])
+        await elasticToken.transferFrom(accounts[0], accounts[5], 1e1, { from: accounts[3] })
+        const approvalPost = await elasticToken.approvals.call(accounts[0], accounts[3])
+        const balanceApost = await elasticToken.balances.call(accounts[0])
+        const balanceBpost = await elasticToken.balances.call(accounts[5])
+        assert.equal(approvalPre.sub(approvalPost).toString(), '10')
+        assert.equal(balanceApre.sub(balanceApost).toString(), '10')
+        console.log('balanceBpost', balanceBpost)
+        assert.equal(balanceBpost.sub(balanceBpre).toString(), '10')
+      } catch (err) {
+        console.log('### error in test 7', err)
+      }
+    })
+  })
+
+  describe('Burn functionality', () => {
+    it('Should burn 10 tokens given sufficeint balance', async () => {
+      try {
+        const elasticToken = await getContract()
+        const accounts = await getAccounts()
+        const balancePre = await elasticToken.balances.call(accounts[0])
+        const burningPre = await elasticToken.burnings(accounts[0])
+        console.log('burningPre', burningPre)
+        const supplyPre = await elasticToken.supply.call()
+        await elasticToken.burn(10, { from: accounts[0] })
+        const balancePost = await elasticToken.balances.call(accounts[0])
+        const burningPost = await elasticToken.burnings(accounts[0])
+        const supplyPost = await elasticToken.supply.call()
+        console.log('burningPost', burningPost.sub(burningPre))
+        assert.equal(burningPost.sub(burningPre).toString(), '10')
+      } catch (err) {
+        console.log('### error in test 8', err)
+      }
+    })
   })
 })
