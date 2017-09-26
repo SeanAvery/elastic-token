@@ -162,5 +162,15 @@ contract('ElasticToken', (accounts) => {
         console.log('### error in test 9', err)
       }
     })
+
+    it('Should change decimal to 10', async () => {
+      try {
+        const elasticToken = await getContract()
+        await elasticToken.changeDecimal(1e1, { from: accounts[1] })
+        const decimal = await elasticToken.decimal.call()
+        assert.equal(decimal.toString(), '10')
+      } catch (err) {
+      }
+    })
   })
 })
