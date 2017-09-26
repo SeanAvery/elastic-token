@@ -50,7 +50,6 @@ contract('ElasticToken', (accounts) => {
         await elasticToken.transfer(accounts[1], 1e2, { from: accounts[0] })
         const balanceA = await elasticToken.balances.call(accounts[0])
         const balanceB = await elasticToken.balances.call(accounts[1])
-        console.log('balanceApre', balanceApre)
         assert.equal(balanceApre.sub(balanceA).toString(), new BN('100', 10).toString())
         assert.equal(balanceB, new BN('100', 10).toString())
       } catch (err) {
@@ -66,7 +65,7 @@ contract('ElasticToken', (accounts) => {
       try {
         await elasticToken.transfer(balanceApre + 100, accounts[2], { from: accounts[1] })
       } catch (err) {
-        console.log('### throw in transfer call (this is good!)', err)
+        console.log('### throw in transfer call (this is good!)')
       } finally {
         const balanceApost = await elasticToken.balances.call(accounts[1])
         const balanceBpost = await elasticToken.balances.call(accounts[2])
@@ -77,15 +76,35 @@ contract('ElasticToken', (accounts) => {
   })
 
   describe('Approve and TransferFrom tests', () => {
-    it('Should approve spender given sufficient balance', async () => {
+    it('Should approve spender 100 tokens given sufficient balance', async () => {
       try {
         const elasticToken = await getContract()
         const accounts = await getAccounts()
-        await elasticToken.approve(accounts[3], 1e2, { from: accounts[0] })
-        const approval = elasticToken.approvals.call(accounts[3])
+        await elasticToken.approve(accounts[3], 100, { from: accounts[0] })
+        const approval = await elasticToken.approvals.call(accounts[0], accounts[3])
         assert.equal(approval.toString(), new BN(100, 10).toString())
       } catch (err) {
         console.log('### error in test 5', err)
+      }
+    })
+
+    it('Should not approve spender given insufficient balance', async () => {
+      try {
+        const elasticToken = await getContract()
+        const accounts = await getAccounts()
+        const approvalPre = await elasticToken.approvals.call(accounts[3], accounts[4])
+        console.log('approvalPre', approvalPre)
+        try {
+          await elasticToken.approve(accounts[3], 100, { from: accounts[4] })
+        } catch (err) {
+          console.log('### throw in approve call (this is good!)')
+        } finally {
+          const approvalPost = await elasticToken.approvals.call(accounts[4], accounts[3])
+          console.log('approvalPost', approvalPost)
+          assert.equal(approvalPost.toString(), approvalPre.toString())
+        }
+      } catch (err) {
+        console.log('### error in test 6', err)
       }
     })
   })
