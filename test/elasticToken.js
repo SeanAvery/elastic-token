@@ -57,5 +57,36 @@ contract('ElasticToken', (accounts) => {
         console.log('### error in test 3', err)
       }
     })
+
+    it('Should not transfer tokens given unsufficent funds', async () => {
+      const elasticToken = await getContract()
+      const accounts = await getAccounts()
+      const balanceApre = await elasticToken.balances.call(accounts[1])
+      const balanceBpre = await elasticToken.balances.call(accounts[2])
+      try {
+        await elasticToken.transfer(balanceApre + 100, accounts[2], { from: accounts[1] })
+      } catch (err) {
+        console.log('### throw in transfer call (this is good!)', err)
+      } finally {
+        const balanceApost = await elasticToken.balances.call(accounts[1])
+        const balanceBpost = await elasticToken.balances.call(accounts[2])
+        assert.equal(balanceApre.toString(), balanceApost.toString())
+        assert.equal(balanceBpre.toString(), balanceBpost.toString())
+      }
+    })
+  })
+
+  describe('Approve and TransferFrom tests', () => {
+    it('Should approve spender given sufficient balance', async () => {
+      try {
+        const elasticToken = await getContract()
+        const accounts = await getAccounts()
+        await elasticToken.approve(accounts[3], 1e2, { from: accounts[0] })
+        const approval = elasticToken.approvals.call(accounts[3])
+        assert.equal(approval.toString(), new BN(100, 10).toString())
+      } catch (err) {
+        console.log('### error in test 5', err)
+      }
+    })
   })
 })
