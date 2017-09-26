@@ -1,12 +1,10 @@
 const ElasticToken = artifacts.require('./ElasticToken.sol')
 const BN = require('bn.js')
-
 const {
   getContract,
   getCoinbase,
   getAccounts
 } = require('./utils')
-
 const tokenParams =  [ '0x77161ac6576e2870f64ca147de120f0ba8a66255', 1e9, 0, 'Gold', 'GLD' ]
 
 contract('ElasticToken', (accounts) => {
@@ -145,6 +143,23 @@ contract('ElasticToken', (accounts) => {
         assert.equal(supplyPre.sub(supplyPost).toString(), '10')
       } catch (err) {
         console.log('### error in test 8', err)
+      }
+    })
+  })
+
+  describe('Admin functionality', () => {
+    it('Should mint 1000 tokens increasing the supply', async () => {
+      try {
+        const elasticToken = await getContract()
+        const supplyPre = await elasticToken.supply.call()
+        const balancePre = await elasticToken.balances.call(accounts[6])
+        await elasticToken.mint(1e3, accounts[6], { from: accounts[1]})
+        const supplyPost = await elasticToken.supply.call()
+        const balancePost = await elasticToken.balances.call(accounts[6])
+        assert.equal(supplyPost.sub(supplyPre).toString(), '1000')
+        assert.equal(balancePost.sub(balancePre).toString(), '1000')
+      } catch (err) {
+        console.log('### error in test 9', err)
       }
     })
   })
