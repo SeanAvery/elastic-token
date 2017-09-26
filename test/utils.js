@@ -23,7 +23,20 @@ async function getCoinbase() {
   }
 }
 
+async function getAccounts() {
+  try {
+    const accounts = await eth.sendAsync({
+      method: 'eth_accounts',
+      params: []
+    })
+    return accounts
+  } catch (err) {
+    console.log('### error in getAccounts', err)
+  }
+}
+
 module.exports = {
   getContract,
-  getCoinbase
+  getCoinbase,
+  getAccounts
 }
