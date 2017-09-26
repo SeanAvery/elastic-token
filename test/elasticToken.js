@@ -20,8 +20,8 @@ contract('ElasticToken', (accounts) => {
         const name = await elasticToken.name.call()
         const ticker = await elasticToken.ticker.call()
         assert.equal(admin, tokenParams[0])
-        assert.equal(supply, tokenParams[1])
-        assert.equal(decimal, tokenParams[2])
+        assert.equal(supply.toString(), new BN(tokenParams[1], 10).toString())
+        assert.equal(decimal.toString(), new BN(tokenParams[2], 10).toString())
         assert.equal(name, tokenParams[3])
         assert.equal(ticker, tokenParams[4])
       } catch (err) {
@@ -34,7 +34,7 @@ contract('ElasticToken', (accounts) => {
         const elasticToken = await getContract()
         const deployer = await getCoinbase()
         const balance = await elasticToken.balances.call(deployer)
-        assert.equal(balance, tokenParams[1])
+        assert.equal(balance.toString(), new BN(tokenParams[1], 10).toString())
       } catch (err) {
         console.log('### error in test 2', err)
       }
