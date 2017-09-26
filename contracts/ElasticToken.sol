@@ -60,6 +60,7 @@ contract ElasticToken {
     require(balances[msg.sender] >= _amount);
     balances[msg.sender] -= _amount;
     burnings[msg.sender] += _amount;
+    supply -= _amount;
     Burn(msg.sender, _amount);
     return true;
   }
@@ -101,4 +102,5 @@ contract ElasticToken {
   }
 
   /* SAFE MATH */
+
 }
