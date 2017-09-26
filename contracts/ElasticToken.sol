@@ -10,15 +10,15 @@ contract ElasticToken {
   event ChangeDecimal(uint256 _decimal);
 
   /* STATE */
-  address admin;
-  uint256 supply;
-  uint256 decimal;
-  string name;
-  string ticker;
-  mapping(address => uint256) balances;
-  mapping(address => mapping(address => uint256)) approvals;
-  mapping(address => uint) burnings;
-  mapping(bytes32 => bool) fills;
+  address public admin;
+  uint256 public supply;
+  uint256 public decimal;
+  string public name;
+  string public ticker;
+  mapping(address => uint256) public balances;
+  mapping(address => mapping(address => uint256)) public approvals;
+  mapping(address => uint) public burnings;
+  mapping(bytes32 => bool) public fills;
 
   /* CNSTRCTR */
   function ElasticToken(address _admin, uint256 _supply, uint256 _decimal, string _name, string _ticker) {
