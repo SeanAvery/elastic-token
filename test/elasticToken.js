@@ -1,5 +1,7 @@
 const ElasticToken = artifacts.require('./ElasticToken.sol')
 const BN = require('bn.js')
+const sha3 = require('solidity-sha3').default
+const crypto = require('crypto')
 const {
   getContract,
   getCoinbase,
@@ -170,6 +172,34 @@ contract('ElasticToken', (accounts) => {
         const decimal = await elasticToken.decimal.call()
         assert.equal(decimal.toString(), '10')
       } catch (err) {
+        console.log('### error in test 10', err)
+      }
+    })
+
+    it('Should change admin', async () => {
+      try {
+        const elasticToken = await getContract()
+        await elasticToken.changeAdmin(accounts[7], { from: accounts[1] })
+        const admin = await elasticToken.admin.call()
+        assert.equal(admin, accounts[7])
+      } catch (err) {
+        console.log('### error in test 11', err)
+      }
+    })
+  })
+
+  describe('Signature abstracted tests', async () => {
+    it('Should burn 10 tokens given correct signature', async () => {
+      try {
+        const elasticToken = await getContract()
+        const salt = crypto.randomBytes(32).toString('hex')
+        console.log('salt', salt)
+        const msgHash = sha3(elasticToken.address, '0xc1644b1f', salt, 10)
+        console.log('msgHash', msgHash)
+        // const signature = await signMsg()
+        // const signature = await signMsg(accounts[0], 10)
+      } catch (err) {
+        console.log('### error in test 12', err)
       }
     })
   })
