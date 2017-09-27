@@ -3,7 +3,7 @@ const RPC = require('ethereumjs-testrpc')
 
 async function readAccounts() {
   return new Promise((res, rej) => {
-    fs.readFile('../conf/accounts.json', (err, data) => {
+    fs.readFile('./conf/accounts.json', (err, data) => {
       if (err) rej(err)
       res(data.toString('utf8'))
     })
