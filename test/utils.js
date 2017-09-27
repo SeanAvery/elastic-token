@@ -2,6 +2,10 @@ const ElasticToken = artifacts.require('./ElasticToken.sol')
 const provider = require('ethjs-provider-http')
 const rpc = require('ethjs-rpc')
 const eth = new rpc(new provider('http://localhost:8547'))
+const {
+  ecsign
+} = require('ethereumjs-util')
+const users = require('../conf/accounts.json')
 
 function getContract() {
   return new Promise((res, rej) => {
@@ -35,8 +39,26 @@ async function getAccounts() {
   }
 }
 
+async function signMsg(pubAdrs, msgHsh) {
+  try {
+    let privbuff
+    console.log('pubAdrs', pubAdrs)
+    users.forEach((usr, i) => {
+      if (usr.publicAddress == pubAdrs) {
+        console.log('made it')
+        privbuff = Buffer.from(usr.secretKey, 'hex')
+      }
+    })
+    console.log('privBuff', privbuff)
+    // const signature = ecsign()
+  } catch (err) {
+    console.log('### error in signMsg', err)
+  }
+}
+
 module.exports = {
   getContract,
   getCoinbase,
-  getAccounts
+  getAccounts,
+  signMsg
 }
