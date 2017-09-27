@@ -202,6 +202,7 @@ contract('ElasticToken', (accounts) => {
         const salt = crypto.randomBytes(32).toString('hex')
         const msgHash = sha3(elasticToken.address, '0xc1644b1f', salt, 10)
         const signature = await signMsg(accounts[0], msgHash)
+        console.log('signature', signature)
         // const signature = await signMsg(accounts[0], 10)
       } catch (err) {
         console.log('### error in test 12', err)

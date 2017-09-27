@@ -46,7 +46,10 @@ async function signMsg(pubAdrs, msgHsh) {
       if (usr.publicAddress == pubAdrs) privbuff = usr.secretKey
     })
     const signature = ecsign(Buffer.from(msgHsh.substring(2), 'hex'), Buffer.from(privbuff.substring(2), 'hex'))
-    console.log('signature', signature)
+    console.log('r', signature.r.toString('hex'))
+    console.log('s', signature.s.toString('hex'))
+    console.log('v', signature.v)
+    return [signature.r.toString('hex'), signature.s.toString('hex'), signature.v]
   } catch (err) {
     console.log('### error in signMsg', err)
   }
