@@ -4,7 +4,10 @@
   "description": "EIP 661 implementation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "launch": "npm i truffle -g && npm i",
+    "start": "npm run create-users && npm start-rpc",
+    "create-users": "node ./scripts/createAccounts.js",
+    "start-rpc": "node ./scripts/startRPC.js"
   },
   "repository": {
     "type": "git",
@@ -13,7 +16,10 @@
   "keywords": [
     "token",
     "solidity",
-    "ethereum"
+    "ethereum",
+    "eip661",
+    "eip662",
+    "javascript"
   ],
   "author": "Sean Pollock",
   "license": "ISC",
