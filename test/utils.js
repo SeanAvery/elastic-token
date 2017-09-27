@@ -44,13 +44,10 @@ async function signMsg(pubAdrs, msgHsh) {
     let privbuff
     console.log('pubAdrs', pubAdrs)
     users.forEach((usr, i) => {
-      if (usr.publicAddress == pubAdrs) {
-        console.log('made it')
-        privbuff = Buffer.from(usr.secretKey, 'hex')
-      }
+      if (usr.publicAddress == pubAdrs) privbuff = Buffer.from(usr.secretKey, 'utf8')
     })
-    console.log('privBuff', privbuff)
-    // const signature = ecsign()
+    const signature = ecsign(msgHsh, privbuff)
+    console.log('signature', signature)
   } catch (err) {
     console.log('### error in signMsg', err)
   }

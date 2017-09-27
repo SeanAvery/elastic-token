@@ -5,9 +5,12 @@ const crypto = require('crypto')
 const {
   getContract,
   getCoinbase,
-  getAccounts
+  getAccounts,
+  signMsg
 } = require('./utils')
-const tokenParams =  [ '0x77161ac6576e2870f64ca147de120f0ba8a66255', 1e9, 0, 'Gold', 'GLD' ]
+const users = require('../conf/accounts.json')
+
+const tokenParams =  [ users[1].publicAddress, 1e9, 0, 'Gold', 'GLD' ]
 
 contract('ElasticToken', (accounts) => {
   describe('initialization tests', () => {
@@ -179,6 +182,10 @@ contract('ElasticToken', (accounts) => {
     it('Should change admin', async () => {
       try {
         const elasticToken = await getContract()
+        const accounts = await getAccounts()
+        const adminPre = await elasticToken.admin.call()
+        console.log('adminPre', adminPre)
+        console.log('accounts 1', accounts[1])
         await elasticToken.changeAdmin(accounts[7], { from: accounts[1] })
         const admin = await elasticToken.admin.call()
         assert.equal(admin, accounts[7])
@@ -193,10 +200,8 @@ contract('ElasticToken', (accounts) => {
       try {
         const elasticToken = await getContract()
         const salt = crypto.randomBytes(32).toString('hex')
-        console.log('salt', salt)
         const msgHash = sha3(elasticToken.address, '0xc1644b1f', salt, 10)
-        console.log('msgHash', msgHash)
-        // const signature = await signMsg()
+        const signature = await signMsg(accounts[0], msgHash)
         // const signature = await signMsg(accounts[0], 10)
       } catch (err) {
         console.log('### error in test 12', err)
