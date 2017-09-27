@@ -42,11 +42,10 @@ async function getAccounts() {
 async function signMsg(pubAdrs, msgHsh) {
   try {
     let privbuff
-    console.log('pubAdrs', pubAdrs)
     users.forEach((usr, i) => {
-      if (usr.publicAddress == pubAdrs) privbuff = Buffer.from(usr.secretKey, 'utf8')
+      if (usr.publicAddress == pubAdrs) privbuff = usr.secretKey
     })
-    const signature = ecsign(msgHsh, privbuff)
+    const signature = ecsign(Buffer.from(msgHsh.substring(2), 'hex'), Buffer.from(privbuff.substring(2), 'hex'))
     console.log('signature', signature)
   } catch (err) {
     console.log('### error in signMsg', err)
