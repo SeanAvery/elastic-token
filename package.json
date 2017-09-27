@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "launch": "npm i truffle -g && npm i",
-    "start": "npm run create-users && npm start-rpc",
+    "start": "npm run create-users && npm run start-rpc",
     "create-users": "node ./scripts/createAccounts.js",
     "start-rpc": "node ./scripts/startRPC.js"
   },
